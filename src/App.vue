@@ -1,10 +1,10 @@
 <template>
-  <HeaderApp :menu-options="menuOptions"/>
+  <header-app :menu-options="menuOptions"/>
   <router-view/>
 </template>
 
 <script>
-import HeaderApp from '@/components/Header.vue'
+import HeaderApp from '@/components/Header'
 
 export default {
   name: 'HomeView',
