@@ -4,6 +4,14 @@
       <div class="flex-column">
         <product-list />
         <!-- <Cart></Cart> -->
+        <div>
+          <div>
+            <p>Carrinho: {{ cart.products }}</p>
+          </div>
+          <div>
+            <p>Total: {{ cart.total }}</p>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -12,6 +20,8 @@
 <script>
 import ProductList from '@/components/ProductList'
 
+import cart from '@/store/cart'
+
 export default {
   name: 'HomeView',
   components: {
@@ -19,6 +29,7 @@ export default {
   },
   setup () {
     return {
+      cart
     }
   }
 }

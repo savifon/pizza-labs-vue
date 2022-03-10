@@ -9,12 +9,17 @@
       </p>
 
       <p class="price">
-        <span v-if="product.priceOriginal" class="old-price">{{ formatPrice(product.priceOriginal) }}</span>
+        <span
+          v-if="product.priceOriginal"
+          class="old-price"
+        >
+          {{ formatPrice(product.priceOriginal) }}
+        </span>
         {{ formatPrice(product.price) }}
       </p>
 
       <div class="group-buttons">
-        <button onclick="alert('remover item')">-</button>
+        <button @click="remove(product)">-</button>
           <input v-if="'inCart' === 'inCart'"
             class="qty"
             type="text"
@@ -24,7 +29,7 @@
         <button
           :disabled="'inCart' !== 'inCart'"
           className="red"
-          onclick="alert('add item')"
+          @click="add(product)"
         >
           <template v-if="'inCart' === 'inCart'">+</template>
           <template v-else>Adicionar</template>
@@ -35,6 +40,7 @@
 </template>
 
 <script>
+import { add, remove } from '@/store/cart'
 import { formatPrice, formatArray } from '@/utils/format'
 
 export default {
@@ -48,7 +54,9 @@ export default {
   setup () {
     return {
       formatPrice,
-      formatArray
+      formatArray,
+      add,
+      remove
     }
   }
 }
