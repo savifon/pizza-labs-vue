@@ -11,7 +11,10 @@
 
       <p class="text">Total: {{ formatPrice(cart.total) }}</p>
 
-      <button v-if="'pedido' === 'pedido'" className="red btn-checkout" onClick="alert('fechar pedido')">
+      <button
+        className="red btn-checkout"
+        @click="checkout"
+      >
         Confirmar pedido
       </button>
     </template>
@@ -24,7 +27,7 @@
 
 <script>
 import ProductItem from '@/components/ProductItem'
-import cart from '@/store/cart'
+import cart, { checkout } from '@/store/cart'
 
 import { formatPrice } from '@/utils/format'
 
@@ -35,6 +38,7 @@ export default {
   },
   setup () {
     return {
+      checkout,
       cart,
       formatPrice
     }
