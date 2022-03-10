@@ -14,7 +14,7 @@
 <script>
 import { onMounted, reactive } from 'vue'
 
-import Product from '@/components/Product'
+import Product from '@/components/ProductItem'
 
 import { rounded } from '@/utils/format'
 import api from '@/services/api'
