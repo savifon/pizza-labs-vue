@@ -33,7 +33,7 @@
 
         <button
           className="red"
-          :disabled="canAdd(product)"
+          :disabled="canAdd(product, callOrigin)"
           @click="add(product)"
         >
           <template v-if="callOrigin === 'cart'">+</template>
@@ -62,9 +62,9 @@ export default {
     }
   },
   setup () {
-    function canAdd (product) {
+    function canAdd (product, callOrigin) {
       return cart.products.find(
-        (item) => item.name === product.name && this.callOrigin !== 'cart'
+        (item) => item.name === product.name && callOrigin !== 'cart'
       )
     }
 
