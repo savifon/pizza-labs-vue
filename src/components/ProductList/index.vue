@@ -1,10 +1,10 @@
 <template>
   <div class="list-products">
-    <template v-if="state.products">
-      <product
-        v-for="(product, index) in state.products"
-        :key="index"
+    <template v-if="state.products.length > 0">
+      <product-item v-for="product in state.products"
+        :key="`product-list-${product.name}`"
         :product="product"
+        callOrigin="list"
       />
     </template>
     <p v-else>Você não selecionou nenhum item</p>
@@ -14,7 +14,7 @@
 <script>
 import { onMounted, reactive } from 'vue'
 
-import Product from '@/components/ProductItem'
+import ProductItem from '@/components/ProductItem'
 
 import { rounded } from '@/utils/format'
 import api from '@/services/api'
@@ -22,7 +22,7 @@ import api from '@/services/api'
 export default {
   name: 'ProductList',
   components: {
-    Product
+    ProductItem
   },
   setup () {
     const state = reactive({

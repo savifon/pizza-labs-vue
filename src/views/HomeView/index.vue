@@ -3,15 +3,7 @@
     <div class="container">
       <div class="flex-column">
         <product-list />
-        <!-- <Cart></Cart> -->
-        <div>
-          <div>
-            <p>Carrinho: {{ cart.products }}</p>
-          </div>
-          <div>
-            <p>Total: {{ cart.total }}</p>
-          </div>
-        </div>
+        <cart-resume />
       </div>
     </div>
   </div>
@@ -19,13 +11,15 @@
 
 <script>
 import ProductList from '@/components/ProductList'
+import CartResume from '@/components/Cart'
 
 import cart from '@/store/cart'
 
 export default {
   name: 'HomeView',
   components: {
-    ProductList
+    ProductList,
+    CartResume
   },
   setup () {
     return {

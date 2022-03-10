@@ -9,8 +9,7 @@
       </p>
 
       <p class="price">
-        <span
-          v-if="product.priceOriginal"
+        <span v-if="product.priceOriginal"
           class="old-price"
         >
           {{ formatPrice(product.priceOriginal) }}
@@ -19,19 +18,25 @@
       </p>
 
       <div class="group-buttons">
-        <button @click="remove(product)">-</button>
-          <input v-if="'inCart' === 'inCart'"
-            class="qty"
-            type="text"
-            readonly
-            value="123"
-          />
+        <button v-if="callOrigin === 'cart'"
+          @click="remove(product)"
+        >
+          -
+        </button>
+
+        <input v-if="callOrigin === 'cart'"
+          class="qty"
+          type="text"
+          disabled
+          :value="product.qty"
+        />
+
         <button
-          :disabled="'inCart' !== 'inCart'"
           className="red"
+          :disabled="canAdd(product)"
           @click="add(product)"
         >
-          <template v-if="'inCart' === 'inCart'">+</template>
+          <template v-if="callOrigin === 'cart'">+</template>
           <template v-else>Adicionar</template>
         </button>
       </div>
@@ -40,7 +45,7 @@
 </template>
 
 <script>
-import { add, remove } from '@/store/cart'
+import cart, { add, remove } from '@/store/cart'
 import { formatPrice, formatArray } from '@/utils/format'
 
 export default {
@@ -49,12 +54,25 @@ export default {
     product: {
       type: Object,
       required: true
+    },
+    callOrigin: {
+      type: String,
+      required: false,
+      default: 'list'
     }
   },
   setup () {
+    function canAdd (product) {
+      return cart.products.find(
+        (item) => item.name === product.name && this.callOrigin !== 'cart'
+      )
+    }
+
     return {
       formatPrice,
       formatArray,
+      canAdd,
+      cart,
       add,
       remove
     }
