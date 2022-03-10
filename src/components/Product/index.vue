@@ -54,10 +54,15 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 div.product-card {
   display: flex;
   gap: 10px;
+  margin-top: 10px;
+
+  &:first-child {
+    margin-top: 0;
+  }
 }
 
 div.details {
