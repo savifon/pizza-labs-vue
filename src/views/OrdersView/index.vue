@@ -25,12 +25,28 @@
 </template>
 
 <script>
+import { onMounted, ref } from 'vue'
+
+import { setOrders, getOrders } from '@/store/cart'
 import { formatDate, formatPrice } from '@/utils/format'
 
 export default {
   name: 'OrdersView',
   setup () {
+    const orders = ref([])
+
+    onMounted(() => {
+      const ordersRecovered = window.localStorage.getItem('orders')
+
+      if (ordersRecovered) {
+        setOrders(JSON.parse(ordersRecovered))
+      }
+
+      orders.value = getOrders()
+    })
+
     return {
+      orders,
       formatDate,
       formatPrice
     }

@@ -2,7 +2,7 @@ import { reactive, ref, watch } from 'vue'
 
 import { open as openModal, close as closeModal } from '@/hooks/useModal'
 import api from '@/services/api'
-import { formatMinutes, formatPrice } from '@/utils/format'
+import { formatMinutes, rounded } from '@/utils/format'
 
 const cart = reactive({
   products: [],
@@ -73,19 +73,26 @@ export async function checkout () {
       action: closeModal
     })
 
-    orders.value = [
+    setOrders([
       ...orders.value,
       {
         status: checkout.success,
         products: cart.products,
-        price: formatPrice(cart.total),
+        price: rounded(cart.total),
         order_at: new Date()
       }
-    ]
-
-    window.localStorage.setItem('orders', JSON.stringify(orders.value))
+    ])
 
     cart.products = []
     cart.total = 0
   }
+}
+
+export function setOrders (newOrders) {
+  orders.value = newOrders
+  window.localStorage.setItem('orders', JSON.stringify(newOrders))
+}
+
+export function getOrders () {
+  return orders.value
 }
