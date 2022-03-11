@@ -1,17 +1,17 @@
 import { reactive, ref, watch } from 'vue'
 
+import { open as openModal, close as closeModal } from '@/hooks/useModal'
 import api from '@/services/api'
-import { formatMinutes } from '@/utils/format'
+import { formatMinutes, formatPrice } from '@/utils/format'
 
-const cartInitialState = {
+const cart = reactive({
   products: [],
   total: 0
-}
-
-const cart = reactive(cartInitialState)
-export default cart
+})
 
 const orders = ref([])
+
+export default cart
 
 watch(
   () => cart.products,
@@ -67,13 +67,18 @@ export async function checkout () {
     console.log(`Seu pedido será entregue em ${formatMinutes(
       checkout.deliveryTime
     )} minutos!`)
+    openModal({
+      text: `Seu pedido será entregue em ${formatMinutes(checkout.deliveryTime)} minutos!`,
+      textButton: 'Voltar ao início',
+      action: closeModal
+    })
 
     orders.value = [
       ...orders.value,
       {
         status: checkout.success,
         products: cart.products,
-        price: cart.total,
+        price: formatPrice(cart.total),
         order_at: new Date()
       }
     ]

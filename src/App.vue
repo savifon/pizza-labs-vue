@@ -1,15 +1,18 @@
 <template>
   <header-app :menu-options="menuOptions"/>
   <router-view/>
+  <modal-component/>
 </template>
 
 <script>
 import HeaderApp from '@/components/Header'
+import ModalComponent from '@/components/Modal'
 
 export default {
   name: 'HomeView',
   components: {
-    HeaderApp
+    HeaderApp,
+    ModalComponent
   },
   setup () {
     const menuOptions = [
