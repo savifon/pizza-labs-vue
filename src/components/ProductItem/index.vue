@@ -45,7 +45,7 @@
 </template>
 
 <script>
-import cart, { add, remove } from '@/store/cart'
+import { cart, actions } from '@/store/cart'
 import { formatPrice, formatArray } from '@/utils/format'
 
 export default {
@@ -73,8 +73,8 @@ export default {
       formatArray,
       canAdd,
       cart,
-      add,
-      remove
+      add: actions.add,
+      remove: actions.remove
     }
   }
 }

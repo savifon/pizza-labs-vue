@@ -7,7 +7,7 @@
         callOrigin="list"
       />
     </template>
-    <p v-else>Você não selecionou nenhum item</p>
+    <p v-else>Nenhum produto disponível</p>
   </div>
 </template>
 

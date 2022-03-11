@@ -1,98 +1,85 @@
-import { reactive, ref, watch } from 'vue'
-
-import { open as openModal, close as closeModal } from '@/hooks/useModal'
+import { reactive, readonly, watch } from 'vue'
+import { cloneDeep } from 'lodash'
 import api from '@/services/api'
+import { actions as orderActions } from './orders'
 import { formatMinutes, rounded } from '@/utils/format'
+import { open as openModal, close as closeModal } from '@/hooks/useModal'
 
-const cart = reactive({
+const initialCart = {
   products: [],
   total: 0
-})
+}
 
-const orders = ref([])
+const _cart = reactive(cloneDeep(initialCart))
 
-export default cart
+let cart = readonly(_cart)
 
 watch(
-  () => cart.products,
+  () => (_cart.products),
   () => {
-    cart.total = cart.products.reduce((total, product) => {
+    console.log('opa')
+    _cart.total = _cart.products.reduce((total, product) => {
       return total + product.price * product.qty
     }, 0)
-    window.localStorage.setItem('cart', JSON.stringify(cart.products))
+    window.localStorage.setItem('cart', JSON.stringify(_cart.products))
   }
 )
 
-export function add (product) {
-  const found = cart.products.find((item) => item.name === product.name)
+const actions = {
+  add (product) {
+    const found = _cart.products.find((item) => item.name === product.name)
 
-  if (found) {
-    cart.products = cart.products.map((item) =>
-      item.name === product.name
-        ? { ...found, qty: found.qty + 1 }
-        : item
-    )
-  } else {
-    cart.products = [...cart.products, { ...product, qty: 1 }]
-  }
-}
+    if (found) {
+      _cart.products = _cart.products.map((item) =>
+        item.name === product.name
+          ? { ...found, qty: found.qty + 1 }
+          : item
+      )
+    } else {
+      _cart.products = [..._cart.products, { ...product, qty: 1 }]
+    }
+  },
+  remove (product) {
+    const found = _cart.products.find((item) => item.name === product.name)
 
-export function remove (product) {
-  const found = cart.products.find((item) => item.name === product.name)
+    if (found) {
+      _cart.products = _cart.products.filter((item) => item.name !== product.name)
+    }
+  },
+  async checkout () {
+    let checkout = {}
 
-  if (found.qty > 1) {
-    cart.products = cart.products.map((item) =>
-      item.name === product.name
-        ? { ...found, qty: found.qty - 1 }
-        : item
-    )
-  } else {
-    cart.products = cart.products.filter((item) => item.name !== product.name)
-  }
-}
+    await api
+      .get('order.json')
+      .then((response) => {
+        checkout = response.data
+      })
+      .catch(function (error) {
+        console.log(error)
+      })
 
-export async function checkout () {
-  let checkout = {}
+    if (checkout.success) {
+      openModal({
+        text: `Seu pedido será entregue em ${formatMinutes(checkout.deliveryTime)} minutos!`,
+        textButton: 'Voltar ao início',
+        action: closeModal
+      })
 
-  await api
-    .get('order.json')
-    .then((response) => {
-      checkout = response.data
-    })
-    .catch(function (error) {
-      console.log(error)
-    })
-
-  if (checkout.success) {
-    console.log(`Seu pedido será entregue em ${formatMinutes(
-      checkout.deliveryTime
-    )} minutos!`)
-    openModal({
-      text: `Seu pedido será entregue em ${formatMinutes(checkout.deliveryTime)} minutos!`,
-      textButton: 'Voltar ao início',
-      action: closeModal
-    })
-
-    setOrders([
-      ...orders.value,
-      {
+      const order = {
         status: checkout.success,
-        products: cart.products,
-        price: rounded(cart.total),
+        products: _cart.products,
+        price: rounded(_cart.total),
         order_at: new Date()
       }
-    ])
+      orderActions.add(order)
 
-    cart.products = []
-    cart.total = 0
+      actions.reset()
+    }
+  },
+  reset () {
+    _cart.products = []
+    cart = readonly(_cart)
   }
 }
 
-export function setOrders (newOrders) {
-  orders.value = newOrders
-  window.localStorage.setItem('orders', JSON.stringify(newOrders))
-}
-
-export function getOrders () {
-  return orders.value
-}
+export { cart, actions }

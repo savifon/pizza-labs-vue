@@ -9,7 +9,7 @@ e pedidos já efetuados.
 
 -   Vue.js 3
 -   Axios
--   Sass
+-   SASS
 
 ## Configuração
 
