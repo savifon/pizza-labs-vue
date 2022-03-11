@@ -38,7 +38,7 @@ export default {
           state.products = items.map((item) => ({
             ...item,
             price: item.price > 5 ? rounded(item.price * 0.95) : item.price,
-            priceOriginal: item.price > 5 && item.price
+            priceOriginal: item.price > 5 ? item.price : null
           }))
         })
         .catch(function (error) {

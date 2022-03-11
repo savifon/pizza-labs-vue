@@ -1,18 +1,17 @@
-import { reactive, watch } from 'vue'
+import { reactive, ref, watch } from 'vue'
 
 import api from '@/services/api'
 import { formatMinutes } from '@/utils/format'
 
-const cart = reactive({
+const cartInitialState = {
   products: [],
   total: 0
-})
+}
 
-// const orders = reactive({
-
-// })
-
+const cart = reactive(cartInitialState)
 export default cart
+
+const orders = ref([])
 
 watch(
   () => cart.products,
@@ -20,6 +19,7 @@ watch(
     cart.total = cart.products.reduce((total, product) => {
       return total + product.price * product.qty
     }, 0)
+    window.localStorage.setItem('cart', JSON.stringify(cart.products))
   }
 )
 
@@ -51,19 +51,36 @@ export function remove (product) {
   }
 }
 
-export function checkout () {
-  api
+export async function checkout () {
+  let checkout = {}
+
+  await api
     .get('order.json')
     .then((response) => {
-      const data = response.data
-
-      if (data.success) {
-        console.log(`Seu pedido será entregue em ${formatMinutes(
-          data.deliveryTime
-        )} minutos!`)
-      }
+      checkout = response.data
     })
     .catch(function (error) {
       console.log(error)
     })
+
+  if (checkout.success) {
+    console.log(`Seu pedido será entregue em ${formatMinutes(
+      checkout.deliveryTime
+    )} minutos!`)
+
+    orders.value = [
+      ...orders.value,
+      {
+        status: checkout.success,
+        products: cart.products,
+        price: cart.total,
+        order_at: new Date()
+      }
+    ]
+
+    window.localStorage.setItem('orders', JSON.stringify(orders.value))
+
+    cart.products = []
+    cart.total = 0
+  }
 }

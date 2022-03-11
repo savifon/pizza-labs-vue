@@ -26,6 +26,8 @@
 </template>
 
 <script>
+import { onMounted } from 'vue'
+
 import ProductItem from '@/components/ProductItem'
 import cart, { checkout } from '@/store/cart'
 
@@ -37,6 +39,14 @@ export default {
     ProductItem
   },
   setup () {
+    onMounted(() => {
+      const cartRecovered = window.localStorage.getItem('cart')
+
+      if (cartRecovered) {
+        cart.products = JSON.parse(cartRecovered)
+      }
+    })
+
     return {
       checkout,
       cart,
