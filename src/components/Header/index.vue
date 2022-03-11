@@ -1,15 +1,15 @@
 <template>
   <div class="header">
     <div class="box">
-      <a href="#" alt="Ir para o início">
+      <router-link to="/">
         <img :src="logo" alt="Pizza Labs" class="logo" />
-      </a>
+      </router-link>
 
       <ul class="nav">
         <li v-for="option in menuOptions" :key="option.ref">
-          <a :href="option.ref" :alt="option.title">
+          <router-link :to="option.ref">
             {{ option.title }}
-          </a>
+          </router-link>
         </li>
       </ul>
     </div>
@@ -21,15 +21,15 @@ import logo from '@/assets/images/logo.svg'
 
 export default {
   name: 'HeaderApp',
-  props: {
-    menuOptions: {
-      type: Array,
-      required: true
-    }
-  },
   setup () {
+    const menuOptions = [
+      { title: 'Início', ref: '/' },
+      { title: 'Pedidos Realizados', ref: '/pedidos' }
+    ]
+
     return {
-      logo
+      logo,
+      menuOptions
     }
   }
 }

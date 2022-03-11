@@ -1,7 +1,7 @@
 <template>
+  <modal-component/>
   <header-app :menu-options="menuOptions"/>
   <router-view/>
-  <modal-component/>
 </template>
 
 <script>
