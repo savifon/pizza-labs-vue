@@ -17,7 +17,6 @@ let cart = readonly(_cart)
 watch(
   () => (_cart.products),
   () => {
-    console.log('opa')
     _cart.total = _cart.products.reduce((total, product) => {
       return total + product.price * product.qty
     }, 0)
